@@ -1,0 +1,10 @@
+# Noir build artifacts
+target/
+proofs/
+
+# Temporary files
+*.proof
+*.vk
+
+# Environment
+.env
