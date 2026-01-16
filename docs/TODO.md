@@ -94,3 +94,10 @@ proof.hex (or proof.json)
 public_inputs.json as 18 bytes32
 
 Then I’ll give you a minimal Hardhat script (since you’re already in a Node-heavy repo) that reads those files and calls verify() and prints true.
+## Deployed Contracts (Aurora Testnet)
+
+- PetitionRegistryV2 Proxy: 0x13A66f2b7FaC2C0afC34E1Cf944f710F342F7034
+- HonkVerifier: 0x716e2C0e1Aa76aA4bAa2871273eA44FbC2F83Da3
+- Implementation: 0x4E16F198105A43C9Cf4380F78C7E752C1Ef100aB
+
+
