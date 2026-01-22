@@ -5,7 +5,7 @@ pragma solidity =0.8.22;
 uint256 constant N = 1024;
 uint256 constant LOG_N = 10;
 uint256 constant NUMBER_OF_PUBLIC_INPUTS = 18;
-uint256 constant VK_HASH = 0x13632935a53f75fd3faff2efc25b9347311a684621d5e28c2ba18e3749c8e8b7;
+uint256 constant VK_HASH = 0x0e290e9216cd83cb4983f67bff0c5c6577f6f29d838b797878f51942543b05bf;
 library HonkVerificationKey {
     function loadVerificationKey() internal pure returns (Honk.VerificationKey memory) {
         Honk.VerificationKey memory vk = Honk.VerificationKey({
@@ -21,16 +21,16 @@ library HonkVerificationKey {
                y: uint256(0x217cf711b527ab281b845dab081145f2af9849684af7015f4b0662045fb77405)
             }),
             qo: Honk.G1Point({ 
-               x: uint256(0x2e7d43ca21c9fe35d6ab27034ee85c9011173e1b1f3e7024a1bbb5e2757d88aa),
-               y: uint256(0x143f07b44b2fe16f27976c27faad31b8b7f50cc2f24f1b87660b59a5b860ef8a)
+               x: uint256(0x00330cce0d87ed15f5357ed2644490e8077cbf5ef020103669b3e63fe7b3f3df),
+               y: uint256(0x1e67d07484ee18775079a01edd2546ec683dc6adce7d4f416f3b417e51c15322)
             }),
             q4: Honk.G1Point({ 
                x: uint256(0x27b9c83b4a8e50a0a22ffaf78e04f309cb608175c89802f76cddaea4c46f4fe8),
                y: uint256(0x1b0a497b49f7156d615fac53142f369473e257c31c6e05e426bd9487926e1e30)
             }),
             qm: Honk.G1Point({ 
-               x: uint256(0x1e46e6379bba42cb10861e1e72f1f7af77a3ea71c4f46787c2cfb8e1e13cb55c),
-               y: uint256(0x1320236fd498baf97ea40ea7d90818335853677332addc5b3b25630366d2e808)
+               x: uint256(0x06502cdc3c5457e924b4b5c060cfbf529fed0a83a93caaed2a86cec97af472d0),
+               y: uint256(0x13c119669f763699d2efd85c69bdba7e2fdd16e2f4b3af95e9a60c15b67fa969)
             }),
             qc: Honk.G1Point({ 
                x: uint256(0x24bc70892ae6b02561fde05f0562f199a3d0ecff4fa1e0bea6d80e4ef69d339e),
@@ -2439,7 +2439,7 @@ abstract contract BaseZKHonkVerifier is IVerifier {
         }
 
         if (!success) revert ShpleminiFailed();
-    }
+}
 }
 
 contract HonkVerifier is BaseZKHonkVerifier(N, LOG_N, VK_HASH, NUMBER_OF_PUBLIC_INPUTS) {

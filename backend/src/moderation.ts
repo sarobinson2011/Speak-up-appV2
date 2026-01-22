@@ -42,7 +42,7 @@ Only reject clear hate speech, violence, or illegal content.
             temperature: 0.3,
         });
 
-        const content = response.choices[0].message.content;
+        const content = response.choices[0]?.message?.content;
         if (!content) throw new Error('No response from OpenAI');
 
         const result = JSON.parse(content);

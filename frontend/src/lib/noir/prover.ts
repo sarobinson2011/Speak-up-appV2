@@ -1,18 +1,6 @@
-import { Noir } from '@noir-lang/noir_js';
-import { UltraHonkBackend, Barretenberg } from '@aztec/bb.js';
-import { poseidon2 } from 'poseidon-lite';
-import circuit from './speak_up_zk.json';
-
 export interface ProofData {
   proof: Uint8Array;
   publicInputs: string[];
-}
-
-function computeNullifier(credentialSecret: string, petitionId: string): string {
-  const secret = BigInt(credentialSecret);
-  const petition = BigInt(petitionId);
-  const nullifier = poseidon2([secret, petition]);
-  return '0x' + nullifier.toString(16).padStart(64, '0');
 }
 
 export async function generateSignatureProof(
@@ -20,45 +8,38 @@ export async function generateSignatureProof(
   petitionId: number
 ): Promise<ProofData> {
   try {
-    const api = await Barretenberg.new();
-    const backend = new UltraHonkBackend(circuit.bytecode as any, api);
+    const response = await fetch('http://localhost:3001/api/generate-proof', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ credentialSecret, petitionId })
+    });
 
-    const noir = new Noir(circuit as any);
-
-    const nullifier = computeNullifier(credentialSecret, petitionId.toString());
-
-    const inputs = {
-      credential_secret: credentialSecret,
-      petition_id: petitionId.toString(),
-      nullifier: nullifier
-    };
-
-    console.log('Generating proof with inputs:', inputs);
-
-    const { witness } = await noir.execute(inputs);
-
-    // CRITICAL: Use keccak option to match on-chain verifier
-    const proof = await backend.generateProof(witness, { keccak: true });
-
-    console.log('Proof generated successfully');
-    console.log('Verifying proof locally with keccak...');
-
-    // Verify locally before sending to chain
-    const verified = await backend.verifyProof(proof, { keccak: true });
-    if (!verified) {
-      throw new Error('Proof failed local verification!');
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.details || 'Proof generation failed');
     }
 
-    console.log('✅ Proof verified locally');
+    const data = await response.json();
 
     return {
-      proof: proof.proof,
-      publicInputs: proof.publicInputs
+      proof: hexToUint8Array(data.proof),
+      publicInputs: data.publicInputs
     };
-  } catch (error) {
+  } catch (error: any) {
     console.error('Proof generation failed:', error);
-    throw new Error(`Failed to generate proof: ${error}`);
+    throw new Error(`Failed to generate proof: ${error.message}`);
   }
+}
+
+function hexToUint8Array(hex: string): Uint8Array {
+  const cleaned = hex.startsWith("0x") ? hex.slice(2) : hex;
+  if (cleaned.length % 2 !== 0) throw new Error("Invalid hex length.");
+
+  const bytes = new Uint8Array(cleaned.length / 2);
+  for (let i = 0, j = 0; i < cleaned.length; i += 2, j++) {
+    bytes[j] = parseInt(cleaned.slice(i, i + 2), 16);
+  }
+  return bytes;
 }
 
 export function getCredentialSecret(): string {

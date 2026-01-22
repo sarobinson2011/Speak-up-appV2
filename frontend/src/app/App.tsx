@@ -152,17 +152,9 @@ function App() {
       console.log('Proof length:', proof.length);
       console.log('Public inputs from proof:', publicInputs);
 
-      // Fix public inputs - the proof returns them in wrong format
-      const correctedPublicInputs = [
-        '0x' + petitionId.toString(16).padStart(64, '0'),
-        publicInputs[1] // Keep the nullifier
-      ];
+      const correctedPublicInputs = publicInputs; // Backend already returns correct format
 
       console.log('Corrected public inputs:', correctedPublicInputs);
-
-      const proofHex = '0x' + Array.from(proof)
-        .map(b => b.toString(16).padStart(2, '0'))
-        .join('');
 
       const signer = await provider.getSigner();
       const contract = new ethers.Contract(
@@ -173,7 +165,7 @@ function App() {
 
       const tx = await contract.signPetition(
         petitionId,
-        proofHex,
+        proof,
         correctedPublicInputs
       );
 

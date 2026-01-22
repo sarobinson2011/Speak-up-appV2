@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import { ethers } from 'ethers';
 import { moderateComment } from './moderation.js';
 import { addVerifiedUser, getApprovedHashes, isApproved } from './merkle.js';
+import proofRouter from './routes/proof.js';
 
 dotenv.config();
 
@@ -23,6 +24,7 @@ const PORT = process.env.PORT || 3001;
 
 app.use(cors());
 app.use(express.json());
+app.use('/api', proofRouter);
 
 // Contract setup
 const PETITION_REGISTRY_ADDRESS = process.env.PETITION_REGISTRY_ADDRESS;
@@ -122,6 +124,7 @@ app.post('/api/moderate-comment', async (req, res) => {
   }
 });
 
+app.use('/api', proofRouter);
 app.listen(PORT, () => {
   console.log(`Backend running on http://localhost:${PORT}`);
 });
